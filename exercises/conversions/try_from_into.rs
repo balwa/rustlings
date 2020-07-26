@@ -11,7 +11,6 @@ struct Color {
     blue: u8,
 }
 
-// I AM NOT DONE
 
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
@@ -22,10 +21,25 @@ struct Color {
 // but slice implementation need check slice length!
 // Also note, that chunk of correct rgb color must be integer in range 0..=255.
 
+// Converting from larger value, we have to sanitize that the max value passed is not greater than u8
+fn convert_func(v: i16) -> Option<u8> {
+    if v > u8::MAX as i16 || v < 0{
+        None
+    } else {
+        Some(v as u8)
+    }
+}
+
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = String;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (r,g,b) = tuple;
+        Ok(Color {
+            red: convert_func(r).unwrap(),
+            green: convert_func(g).unwrap(),
+            blue: convert_func(b).unwrap(),
+        })
     }
 }
 
@@ -33,6 +47,11 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = String;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        Ok(Color {
+            red: convert_func(arr[0]).unwrap(),
+            green: convert_func(arr[1]).unwrap(),
+            blue: convert_func(arr[2]).unwrap(),
+        })
     }
 }
 
@@ -40,6 +59,15 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = String;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() ==3{
+            Ok(Color {
+                red: convert_func(slice[0]).unwrap(),
+                green: convert_func(slice[1]).unwrap(),
+                blue: convert_func(slice[2]).unwrap(),
+            })
+        } else {
+            panic!("incorrect slice length")
+        }
     }
 }
 

@@ -1,10 +1,22 @@
 // enums3.rs
 // Address all the TODOs to make the tests pass!
+use std::convert::TryFrom;
 
-// I AM NOT DONE
+// Converting from larger value, we have to sanitize that the max value passed is not greater than u8
+fn convert_func(v: i32) -> Option<u8> {
+    if v > u8::MAX as i32 {
+        None
+    } else {
+        Some(v as u8)
+    }
+}
 
 enum Message {
     // TODO: implement the message variant types based on their usage below
+    Quit,
+    Echo(String),
+    Move(Point),
+    ChangeColor(i32,i32,i32),
 }
 
 struct Point {
@@ -37,6 +49,12 @@ impl State {
 
     fn process(&mut self, message: Message) {
         // TODO: create a match expression to process the different message variants
+        match message{
+            Message::ChangeColor(r,g,b) => self.change_color((convert_func(r).unwrap(),convert_func(g).unwrap(),convert_func(b).unwrap())),
+            Message::Echo(s) => self.echo(s),
+            Message::Quit => self.quit(),
+            Message::Move(Point) => self.move_position(Point),
+        }
     }
 }
 
